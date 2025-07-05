@@ -9,8 +9,6 @@ Um sistema completo de lanchonete desenvolvido em PHP, MySQL, HTML, CSS e JavaSc
 - **Carrinho de Compras**: Adicionar, remover e gerenciar quantidades de produtos
 - **Sistema de Login**: Autenticação de usuários
 - **Checkout**: Finalização de pedidos com confirmação
-
-### Para Clientes:
 - **Cadastro de Conta**: Criar conta pessoal no sistema
 - **Login Seguro**: Autenticação com validação de dados
 - **Histórico**: Visualizar pedidos realizados
@@ -127,32 +125,6 @@ yfood/
 2. Clique no botão "Cadastrar" (amarelo)
 3. Preencha os dados obrigatórios
 4. Faça login com suas credenciais
-
-### Modificar Estilos:
-1. Edite o arquivo `assets/css/style.css`
-2. As cores principais estão definidas como variáveis CSS
-
-### Adicionar Funcionalidades:
-1. Crie novos arquivos PHP na estrutura apropriada
-2. Adicione validações de segurança
-3. Teste todas as funcionalidades
-
-## 🐛 Solução de Problemas
-
-### Erro de Conexão com Banco:
-- Verifique se o MySQL está rodando
-- Confirme as credenciais em `config/database.php`
-- Certifique-se de que o banco `RAF_ProjetoFoodCursor` existe
-
-### Upload de Imagens não Funciona:
-- Verifique permissões da pasta `uploads/`
-- Confirme se o PHP tem permissão de escrita
-- Verifique o tamanho máximo de upload no `php.ini`
-
-### Página não Carrega:
-- Verifique se o Apache está rodando
-- Confirme se os arquivos estão na pasta correta
-- Verifique logs de erro do Apache
 
 ## 📞 Suporte
 
