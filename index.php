@@ -48,12 +48,16 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>🍔 yFood</h1>
+                <!--<h1>🍔 yFood</h1>-->
+                <img src="assets/img/logo.png" alt="yFood" width="150" height="80">
             </div>
             <nav class="nav">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <a href="historico.php" class="nav-link">
+                        <i class="fas fa-history"></i> Histórico
+                    </a>
                     <a href="logout.php" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i> Sair
+                        <i class="fas fa-sign-out-alt"></i>Sair
                     </a>
                 <?php elseif ($total_carrinho == 0): ?>
                     <a href="login.php" class="nav-link">

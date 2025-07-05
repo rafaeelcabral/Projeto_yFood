@@ -76,20 +76,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Cadastro - yFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>🍔 yFood</h1>
+                <!--<h1>🍔 yFood</h1>-->
+                <img src="assets/img/logo.png" alt="yFood" width="150" height="80">
             </div>
             <nav class="nav">
                 <a href="index.php" class="nav-link">
                     <i class="fas fa-home"></i> Voltar ao Menu
-                </a>
-                <a href="login.php" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i> Login
                 </a>
             </nav>
         </div>

@@ -64,13 +64,30 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
     <title>Checkout - yFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>🍔 yFood</h1>
+                <!--<h1>🍔 yFood</h1>-->
+                <img src="assets/img/logo.png" alt="yFood" width="150" height="80">
             </div>
             <nav class="nav">
                 <a href="index.php" class="nav-link">

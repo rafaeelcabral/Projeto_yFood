@@ -29,7 +29,8 @@ foreach ($_SESSION['carrinho'] as $item) {
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>🍔 yFood</h1>
+                <!--<h1>🍔 yFood</h1>-->
+                <img src="assets/img/logo.png" alt="yFood" width="150" height="80">
             </div>
             <nav class="nav">
                 <a href="index.php" class="nav-link">
