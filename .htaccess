@@ -1,0 +1,91 @@
+# Configurações de Segurança
+Options -Indexes
+ServerSignature Off
+
+# Proteger arquivos sensíveis
+<Files "*.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<Files "config/*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Permitir acesso apenas aos arquivos necessários na pasta config
+<Files "config/database.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Proteger pasta ajax
+<Files "ajax/*.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Configurações de Cache
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/ico "access plus 1 month"
+    ExpiresByType image/icon "access plus 1 month"
+    ExpiresByType text/plain "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    ExpiresByType text/xml "access plus 1 month"
+    ExpiresByType application/xml "access plus 1 month"
+    ExpiresByType application/xml+rss "access plus 1 month"
+    ExpiresByType application/json "access plus 1 month"
+</IfModule>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Headers de Segurança
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Redirecionamentos de erro personalizados
+ErrorDocument 404 /index.php
+ErrorDocument 403 /index.php
+
+# Proteger contra ataques comuns
+RewriteEngine On
+
+# Bloquear acesso a arquivos sensíveis
+RewriteRule ^(config|admin)/.*\.(php|log|txt)$ - [F,L]
+
+# Bloquear acesso direto a arquivos de configuração
+RewriteRule ^.*\.(env|ini|conf)$ - [F,L]
+
+# Permitir acesso apenas a arquivos específicos na pasta ajax
+RewriteCond %{REQUEST_URI} ^/ajax/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ajax/.*$ - [F,L]
+
+# Proteger pasta uploads (apenas imagens)
+RewriteCond %{REQUEST_URI} ^/uploads/
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_FILENAME} !\.(jpg|jpeg|png|gif|webp)$ [NC]
+RewriteRule ^uploads/.*$ - [F,L] 
