@@ -1,59 +1,59 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-// Verificar se está logado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+    // Verificar se está logado
+    if (!isset($_SESSION['usuario_id'])) {
+        header('Location: login.php');
+        exit;
+    }
 
-// Verificar se há itens no carrinho
-if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
-    header('Location: index.php');
-    exit;
-}
+    // Verificar se há itens no carrinho
+    if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
+        header('Location: index.php');
+        exit;
+    }
 
-$sucesso = '';
-$erro = '';
+    $sucesso = '';
+    $erro = '';
 
-// Processar finalização do pedido
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // Calcular total
-        $total = 0;
+    // Processar finalização do pedido
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            // Calcular total
+            $total = 0;
+            foreach ($_SESSION['carrinho'] as $item) {
+                $total += $item['preco'] * $item['quantidade'];
+            }
+            
+            // Inserir pedido
+            $stmt = $pdo->prepare("INSERT INTO pedidos (usuario_id, total) VALUES (?, ?)");
+            $stmt->execute([$_SESSION['usuario_id'], $total]);
+            $pedido_id = $pdo->lastInsertId();
+            
+            // Inserir itens do pedido
+            $stmt = $pdo->prepare("INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)");
+            foreach ($_SESSION['carrinho'] as $produto_id => $item) {
+                $stmt->execute([$pedido_id, $produto_id, $item['quantidade'], $item['preco']]);
+            }
+            
+            // Limpar carrinho
+            unset($_SESSION['carrinho']);
+            
+            $sucesso = "Pedido realizado com sucesso! Número do pedido: #$pedido_id";
+            
+        } catch (PDOException $e) {
+            $erro = 'Erro ao finalizar pedido. Tente novamente.';
+        }
+    }
+
+    // Calcular total atual
+    $total = 0;
+    if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
         foreach ($_SESSION['carrinho'] as $item) {
             $total += $item['preco'] * $item['quantidade'];
         }
-        
-        // Inserir pedido
-        $stmt = $pdo->prepare("INSERT INTO pedidos (usuario_id, total) VALUES (?, ?)");
-        $stmt->execute([$_SESSION['usuario_id'], $total]);
-        $pedido_id = $pdo->lastInsertId();
-        
-        // Inserir itens do pedido
-        $stmt = $pdo->prepare("INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)");
-        foreach ($_SESSION['carrinho'] as $produto_id => $item) {
-            $stmt->execute([$pedido_id, $produto_id, $item['quantidade'], $item['preco']]);
-        }
-        
-        // Limpar carrinho
-        unset($_SESSION['carrinho']);
-        
-        $sucesso = "Pedido realizado com sucesso! Número do pedido: #$pedido_id";
-        
-    } catch (PDOException $e) {
-        $erro = 'Erro ao finalizar pedido. Tente novamente.';
     }
-}
-
-// Calcular total atual
-$total = 0;
-if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
-    foreach ($_SESSION['carrinho'] as $item) {
-        $total += $item['preco'] * $item['quantidade'];
-    }
-}
 ?>
 
 <!DOCTYPE html>

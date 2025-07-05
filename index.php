@@ -1,37 +1,37 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-// Buscar produtos do banco de dados
-try {
-    $stmt = $pdo->query("SELECT * FROM produtos ORDER BY tipo, nome");
-    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $produtos = [];
-}
-
-// Organizar produtos por categoria
-$categorias = [
-    'Combo' => [],
-    'Hambúrguer' => [],
-    'Batata' => [],
-    'Acompanhamento' => [],
-    'Bebida' => []
-];
-
-foreach ($produtos as $produto) {
-    if (isset($categorias[$produto['tipo']])) {
-        $categorias[$produto['tipo']][] = $produto;
+    // Buscar produtos do banco de dados
+    try {
+        $stmt = $pdo->query("SELECT * FROM produtos ORDER BY tipo, nome");
+        $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        $produtos = [];
     }
-}
 
-// Calcular total do carrinho
-$total_carrinho = 0;
-if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
-    foreach ($_SESSION['carrinho'] as $item) {
-        $total_carrinho += $item['preco'] * $item['quantidade'];
+    // Organizar produtos por categoria
+    $categorias = [
+        'Combo' => [],
+        'Hambúrguer' => [],
+        'Batata' => [],
+        'Acompanhamento' => [],
+        'Bebida' => []
+    ];
+
+    foreach ($produtos as $produto) {
+        if (isset($categorias[$produto['tipo']])) {
+            $categorias[$produto['tipo']][] = $produto;
+        }
     }
-}
+
+    // Calcular total do carrinho
+    $total_carrinho = 0;
+    if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
+        foreach ($_SESSION['carrinho'] as $item) {
+            $total_carrinho += $item['preco'] * $item['quantidade'];
+        }
+    }
 ?>
 
 <!DOCTYPE html>

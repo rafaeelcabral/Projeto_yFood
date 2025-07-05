@@ -1,53 +1,53 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-// Verificar se está logado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+    // Verificar se está logado
+    if (!isset($_SESSION['usuario_id'])) {
+        header('Location: login.php');
+        exit;
+    }
 
-// Buscar pedidos do usuário
-try {
-    $stmt = $pdo->prepare("
-        SELECT p.*, 
-               COUNT(ip.id) as total_itens
-        FROM pedidos p 
-        LEFT JOIN itens_pedido ip ON p.id = ip.pedido_id
-        WHERE p.usuario_id = ?
-        GROUP BY p.id
-        ORDER BY p.data_pedido DESC
-    ");
-    $stmt->execute([$_SESSION['usuario_id']]);
-    $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $pedidos = [];
-}
+    // Buscar pedidos do usuário
+    try {
+        $stmt = $pdo->prepare("
+            SELECT p.*, 
+                COUNT(ip.id) as total_itens
+            FROM pedidos p 
+            LEFT JOIN itens_pedido ip ON p.id = ip.pedido_id
+            WHERE p.usuario_id = ?
+            GROUP BY p.id
+            ORDER BY p.data_pedido DESC
+        ");
+        $stmt->execute([$_SESSION['usuario_id']]);
+        $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        $pedidos = [];
+    }
 
-// Função para obter o status em português
-function getStatusText($status) {
-    $status_map = [
-        'pendente' => 'Pendente',
-        'preparando' => 'Preparando',
-        'pronto' => 'Pronto',
-        'entregue' => 'Entregue',
-        'cancelado' => 'Cancelado'
-    ];
-    return $status_map[$status] ?? $status;
-}
+    // Função para obter o status em português
+    function getStatusText($status) {
+        $status_map = [
+            'pendente' => 'Pendente',
+            'preparando' => 'Preparando',
+            'pronto' => 'Pronto',
+            'entregue' => 'Entregue',
+            'cancelado' => 'Cancelado'
+        ];
+        return $status_map[$status] ?? $status;
+    }
 
-// Função para obter a cor do status
-function getStatusColor($status) {
-    $color_map = [
-        'pendente' => '#ff9800',
-        'preparando' => '#2196f3',
-        'pronto' => '#4caf50',
-        'entregue' => '#4caf50',
-        'cancelado' => '#f44336'
-    ];
-    return $color_map[$status] ?? '#666';
-}
+    // Função para obter a cor do status
+    function getStatusColor($status) {
+        $color_map = [
+            'pendente' => '#ff9800',
+            'preparando' => '#2196f3',
+            'pronto' => '#4caf50',
+            'entregue' => '#4caf50',
+            'cancelado' => '#f44336'
+        ];
+        return $color_map[$status] ?? '#666';
+    }
 ?>
 
 <!DOCTYPE html>

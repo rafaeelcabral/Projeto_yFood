@@ -1,18 +1,18 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-// Verificar se há itens no carrinho
-if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
-    header('Location: index.php');
-    exit;
-}
+    // Verificar se há itens no carrinho
+    if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
+        header('Location: index.php');
+        exit;
+    }
 
-// Calcular total
-$total = 0;
-foreach ($_SESSION['carrinho'] as $item) {
-    $total += $item['preco'] * $item['quantidade'];
-}
+    // Calcular total
+    $total = 0;
+    foreach ($_SESSION['carrinho'] as $item) {
+        $total += $item['preco'] * $item['quantidade'];
+    }
 ?>
 
 <!DOCTYPE html>

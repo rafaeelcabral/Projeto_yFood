@@ -1,45 +1,45 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-$erro = '';
+    $erro = '';
 
-// Se já estiver logado, redirecionar
-if (isset($_SESSION['usuario_id'])) {
-    header('Location: index.php');
-    exit;
-}
+    // Se já estiver logado, redirecionar
+    if (isset($_SESSION['usuario_id'])) {
+        header('Location: index.php');
+        exit;
+    }
 
-// Processar formulário de login
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    
-    if (empty($username) || empty($senha)) {
-        $erro = 'Por favor, preencha todos os campos.';
-    } else {
-        try {
-            $stmt = $pdo->prepare("SELECT id, username, senha, nome, tipo FROM usuarios WHERE username = ?");
-            $stmt->execute([$username]);
-            $usuario = $stmt->fetch();
-            
-            if ($usuario && password_verify($senha, $usuario['senha'])) {
-                // Login bem-sucedido
-                $_SESSION['usuario_id'] = $usuario['id'];
-                $_SESSION['usuario_nome'] = $usuario['nome'];
-                $_SESSION['usuario_tipo'] = $usuario['tipo'];
+    // Processar formulário de login
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = trim($_POST['username'] ?? '');
+        $senha = $_POST['senha'] ?? '';
+        
+        if (empty($username) || empty($senha)) {
+            $erro = 'Por favor, preencha todos os campos.';
+        } else {
+            try {
+                $stmt = $pdo->prepare("SELECT id, username, senha, nome, tipo FROM usuarios WHERE username = ?");
+                $stmt->execute([$username]);
+                $usuario = $stmt->fetch();
                 
-                // Redirecionar para a página inicial
-                header('Location: index.php');
-                exit;
-            } else {
-                $erro = 'Usuário ou senha incorretos.';
+                if ($usuario && password_verify($senha, $usuario['senha'])) {
+                    // Login bem-sucedido
+                    $_SESSION['usuario_id'] = $usuario['id'];
+                    $_SESSION['usuario_nome'] = $usuario['nome'];
+                    $_SESSION['usuario_tipo'] = $usuario['tipo'];
+                    
+                    // Redirecionar para a página inicial
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    $erro = 'Usuário ou senha incorretos.';
+                }
+            } catch (PDOException $e) {
+                $erro = 'Erro ao fazer login. Tente novamente.';
             }
-        } catch (PDOException $e) {
-            $erro = 'Erro ao fazer login. Tente novamente.';
         }
     }
-}
 ?>
 
 <!DOCTYPE html>

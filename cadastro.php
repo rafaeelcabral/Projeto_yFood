@@ -1,71 +1,71 @@
 <?php
-session_start();
-require_once 'config/database.php';
+    session_start();
+    require_once 'config/database.php';
 
-$erro = '';
-$sucesso = '';
+    $erro = '';
+    $sucesso = '';
 
-// Se já estiver logado, redirecionar
-if (isset($_SESSION['usuario_id'])) {
-    header('Location: index.php');
-    exit;
-}
+    // Se já estiver logado, redirecionar
+    if (isset($_SESSION['usuario_id'])) {
+        header('Location: index.php');
+        exit;
+    }
 
-// Processar formulário de cadastro
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    $confirmar_senha = $_POST['confirmar_senha'] ?? '';
-    $nome = trim($_POST['nome'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    
-    // Validações
-    if (empty($username) || empty($senha) || empty($confirmar_senha) || empty($nome)) {
-        $erro = 'Por favor, preencha todos os campos obrigatórios.';
-    } elseif (strlen($username) < 3) {
-        $erro = 'O nome de usuário deve ter pelo menos 3 caracteres.';
-    } elseif (strlen($senha) < 4) {
-        $erro = 'A senha deve ter pelo menos 4 caracteres.';
-    } elseif ($senha !== $confirmar_senha) {
-        $erro = 'As senhas não coincidem.';
-    } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $erro = 'E-mail inválido.';
-    } else {
-        try {
-            // Verificar se o username já existe
-            $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE username = ?");
-            $stmt->execute([$username]);
-            
-            if ($stmt->fetch()) {
-                $erro = 'Este nome de usuário já está em uso.';
-            } else {
-                // Verificar se o email já existe (se fornecido)
-                if (!empty($email)) {
-                    $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
-                    $stmt->execute([$email]);
+    // Processar formulário de cadastro
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = trim($_POST['username'] ?? '');
+        $senha = $_POST['senha'] ?? '';
+        $confirmar_senha = $_POST['confirmar_senha'] ?? '';
+        $nome = trim($_POST['nome'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        
+        // Validações
+        if (empty($username) || empty($senha) || empty($confirmar_senha) || empty($nome)) {
+            $erro = 'Por favor, preencha todos os campos obrigatórios.';
+        } elseif (strlen($username) < 3) {
+            $erro = 'O nome de usuário deve ter pelo menos 3 caracteres.';
+        } elseif (strlen($senha) < 4) {
+            $erro = 'A senha deve ter pelo menos 4 caracteres.';
+        } elseif ($senha !== $confirmar_senha) {
+            $erro = 'As senhas não coincidem.';
+        } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $erro = 'E-mail inválido.';
+        } else {
+            try {
+                // Verificar se o username já existe
+                $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE username = ?");
+                $stmt->execute([$username]);
+                
+                if ($stmt->fetch()) {
+                    $erro = 'Este nome de usuário já está em uso.';
+                } else {
+                    // Verificar se o email já existe (se fornecido)
+                    if (!empty($email)) {
+                        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
+                        $stmt->execute([$email]);
+                        
+                        if ($stmt->fetch()) {
+                            $erro = 'Este e-mail já está em uso.';
+                        }
+                    }
                     
-                    if ($stmt->fetch()) {
-                        $erro = 'Este e-mail já está em uso.';
+                    if (empty($erro)) {
+                        // Criar novo usuário
+                        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+                        $stmt = $pdo->prepare("INSERT INTO usuarios (username, senha, nome, email, tipo) VALUES (?, ?, ?, ?, 'cliente')");
+                        $stmt->execute([$username, $senha_hash, $nome, $email]);
+                        
+                        $sucesso = 'Cadastro realizado com sucesso! Você já pode fazer login.';
+                        
+                        // Limpar formulário
+                        $_POST = [];
                     }
                 }
-                
-                if (empty($erro)) {
-                    // Criar novo usuário
-                    $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("INSERT INTO usuarios (username, senha, nome, email, tipo) VALUES (?, ?, ?, ?, 'cliente')");
-                    $stmt->execute([$username, $senha_hash, $nome, $email]);
-                    
-                    $sucesso = 'Cadastro realizado com sucesso! Você já pode fazer login.';
-                    
-                    // Limpar formulário
-                    $_POST = [];
-                }
+            } catch (PDOException $e) {
+                $erro = 'Erro ao realizar cadastro. Tente novamente.';
             }
-        } catch (PDOException $e) {
-            $erro = 'Erro ao realizar cadastro. Tente novamente.';
         }
     }
-}
 ?>
 
 <!DOCTYPE html>
