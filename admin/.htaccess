@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/admin/?$
+RewriteRule ^(admin)/?$ /admin/login.php [L] 

@@ -1,0 +1,109 @@
+<?php
+    session_start();
+    if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
+        header('Location: login.php');
+        exit;
+    }
+    require_once '../config/database.php';
+    // Filtros
+    $id_filtro = $_GET['id'] ?? '';
+    $tipo_filtro = $_GET['tipo'] ?? '';
+    // Buscar tipos de produto
+    $tipos = ['Combo', 'Hambúrguer', 'Batata', 'Acompanhamento', 'Bebida'];
+    // Montar query
+    $sql = 'SELECT * FROM produtos WHERE 1=1';
+    $params = [];
+    if ($id_filtro !== '') {
+        $sql .= ' AND id = ?';
+        $params[] = $id_filtro;
+    }
+    if ($tipo_filtro !== '') {
+        $sql .= ' AND tipo = ?';
+        $params[] = $tipo_filtro;
+    }
+    $sql .= ' ORDER BY id DESC';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $produtos = $stmt->fetchAll();
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos - Admin yFood</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        body { background: #f7f7f7; }
+        .admin-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 200px; background: #22223b; color: #fff; padding-top: 24px; display: flex; flex-direction: column;
+        }
+        .sidebar img { display: block; margin: 0 auto 24px; }
+        .sidebar a {
+            color: #fff; text-decoration: none; padding: 14px 24px; display: block; font-weight: bold; border-left: 4px solid transparent;
+        }
+        .sidebar a.active, .sidebar a:hover { background: #e63946; border-left: 4px solid #f1faee; }
+        .content { flex: 1; padding: 0; }
+        .header {
+            background: #e63946; color: #fff; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .filtros { display: flex; gap: 16px; margin-bottom: 24px; }
+        .filtros input, .filtros select { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; }
+        .filtros button { background: #e63946; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .produtos-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        .produtos-table th, .produtos-table td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .produtos-table th { background: #f1faee; }
+        .produtos-table td { vertical-align: middle; }
+        .novo-btn { margin-left: auto; }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <nav class="sidebar">
+        <img src="../assets/img/logo.png" alt="Logo" width="100">
+        <a href="index.php">Dashboard</a>
+        <a href="produtos.php" class="active">Produtos</a>
+        <a href="pedidos.php">Pedidos</a>
+        <a href="clientes.php">Clientes</a>
+    </nav>
+    <div class="content">
+        <div class="header">
+            <span>Produtos</span>
+            <span><?php echo htmlspecialchars($_SESSION['admin_nome']); ?> | <a href="logout.php" style="color:#fff;text-decoration:underline;">Sair</a></span>
+        </div>
+        <div style="padding:32px;">
+            <form class="filtros" method="get">
+                <input type="text" name="id" placeholder="ID do produto" value="<?php echo htmlspecialchars($id_filtro); ?>">
+                <select name="tipo">
+                    <option value="">Tipo do produto</option>
+                    <?php foreach ($tipos as $tipo): ?>
+                        <option value="<?php echo $tipo; ?>" <?php if ($tipo_filtro === $tipo) echo 'selected'; ?>><?php echo $tipo; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit">Filtrar</button>
+                <button type="button" class="novo-btn">Cadastrar Novo</button>
+            </form>
+            <table class="produtos-table">
+                <thead>
+                    <tr><th>ID</th><th>Nome</th><th>Tipo</th><th>Preço</th><th>Disponível</th></tr>
+                </thead>
+                <tbody>
+                <?php foreach ($produtos as $produto): ?>
+                    <tr>
+                        <td><?php echo $produto['id']; ?></td>
+                        <td><?php echo htmlspecialchars($produto['nome']); ?></td>
+                        <td><?php echo $produto['tipo']; ?></td>
+                        <td>R$ <?php echo number_format($produto['preco'],2,',','.'); ?></td>
+                        <td><?php echo $produto['disponivel'] ? 'Sim' : 'Não'; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if (empty($produtos)): ?>
+                    <tr><td colspan="5" style="text-align:center;">Nenhum produto encontrado.</td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

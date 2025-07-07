@@ -83,6 +83,11 @@ INSERT INTO produtos (nome, descricao, preco, tipo) VALUES
 ('Fanta Laranja', 'Refrigerante 350ml', 5.90, 'Bebida')
 ON DUPLICATE KEY UPDATE id=id;
 
+-- Usuário admin inicial para testes
+INSERT INTO usuarios_admin (username, senha, nome, email, tipo, data_criacao)
+VALUES ('admin', '$2y$10$eImiTXuWVxfM37uY4JANjQ==', 'Administrador', 'admin@yfood.com', 'superadmin', NOW());
+-- A senha acima é um hash de exemplo. Recomenda-se gerar um hash real com password_hash('sua_senha', PASSWORD_DEFAULT) no PHP.
+
 -- =====================================================
 -- ÍNDICES PARA MELHOR PERFORMANCE
 -- =====================================================
