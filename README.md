@@ -1,8 +1,14 @@
 # 🍔 yFood - Sistema de Lanchonete Online
 
+<<<<<<< HEAD
 ## Funcionalidades
 
 ### 1. Plataforma de Pedidos Online
+=======
+### 📱 Funcionalidades
+
+#### 1. Plataforma de Pedidos Online
+>>>>>>> 38e7ee44573b9785434236a0577ca36f804c7d6f
 - Menu interativo com categorias (Combos, Hambúrgueres, Batatas, Acompanhamentos, Bebidas)
 - Adição, remoção e atualização de itens no carrinho
 - Cadastro e login de clientes
@@ -10,19 +16,30 @@
 - Histórico de pedidos realizados
 - Interface responsiva e intuitiva para clientes
 
+<<<<<<< HEAD
 ### 2. Painel Administrativo
+=======
+#### 2. Painel Administrativo
+>>>>>>> 38e7ee44573b9785434236a0577ca36f804c7d6f
 - Gerenciamento de produtos (CRUD)
 - Visualização e controle de pedidos
 - Gerenciamento de clientes cadastrados
 - Login e logout de administradores
 
+<<<<<<< HEAD
 ## Pré-requisitos
+=======
+---
+
+### 🧰 Pré-requisitos
+>>>>>>> 38e7ee44573b9785434236a0577ca36f804c7d6f
 
 - XAMPP (Apache + MySQL + PHP)
 - PHP 7.4 ou superior
 - MySQL 5.7 ou superior
 - Navegador web moderno
 
+<<<<<<< HEAD
 ## Tecnologias Utilizadas
 
 - **Backend:** PHP 7.4+ (PDO)
@@ -33,6 +50,22 @@
 - **Design:** Responsivo
 
 ## Estrutura do Projeto
+=======
+---
+
+### 🛠️ Tecnologias Utilizadas
+
+- **Backend:** PHP 7.4+ (PDO)
+- **Banco de Dados:** MySQL 5.7+
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Servidor:** Apache (XAMPP)
+- **Ícones:** Font Awesome 6.0
+- **Design:** Responsivo
+
+---
+
+### ⚙️ Estrutura do Projeto
+>>>>>>> 38e7ee44573b9785434236a0577ca36f804c7d6f
 
 ```
 Projeto_yFood/
