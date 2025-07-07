@@ -1,141 +1,71 @@
-# 🍔 yFood - Sistema de Lanchonete
+# 🍔 yFood - Sistema de Lanchonete Online
 
-Um sistema completo de lanchonete desenvolvido em PHP, MySQL, HTML, CSS e JavaScript, inspirado no estilo visual do McDonald's.
+## Funcionalidades
 
-## 🚀 Funcionalidades
+### 1. Plataforma de Pedidos Online
+- Menu interativo com categorias (Combos, Hambúrgueres, Batatas, Acompanhamentos, Bebidas)
+- Adição, remoção e atualização de itens no carrinho
+- Cadastro e login de clientes
+- Checkout com confirmação de pedido
+- Histórico de pedidos realizados
+- Interface responsiva e intuitiva para clientes
 
-### Para Clientes:
-- **Página Inicial**: Menu organizado por categorias (Combos, Hambúrgueres, Batatas, Acompanhamentos, Bebidas)
-- **Carrinho de Compras**: Adicionar, remover e gerenciar quantidades de produtos
-- **Sistema de Login**: Autenticação de usuários
-- **Checkout**: Finalização de pedidos com confirmação
-- **Cadastro de Conta**: Criar conta pessoal no sistema
-- **Login Seguro**: Autenticação com validação de dados
-- **Histórico**: Visualizar pedidos realizados
+### 2. Painel Administrativo
+- Gerenciamento de produtos (CRUD)
+- Visualização e controle de pedidos
+- Gerenciamento de clientes cadastrados
+- Login e logout de administradores
 
-## 🛠️ Tecnologias Utilizadas
-
-- **Backend**: PHP 7.4+ com PDO
-- **Banco de Dados**: MySQL 5.7+
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Servidor**: Apache (XAMPP)
-- **Ícones**: Font Awesome 6.0
-- **Estilo**: Design responsivo inspirado no McDonald's
-
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - XAMPP (Apache + MySQL + PHP)
 - PHP 7.4 ou superior
 - MySQL 5.7 ou superior
 - Navegador web moderno
 
-## 🔧 Instalação
+## Tecnologias Utilizadas
 
-### 1. Configurar XAMPP
-1. Baixe e instale o XAMPP
-2. Inicie o Apache e MySQL
-3. Acesse o phpMyAdmin: `http://localhost/phpmyadmin`
+- **Backend:** PHP 7.4+ (PDO)
+- **Banco de Dados:** MySQL 5.7+
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Servidor:** Apache (XAMPP)
+- **Ícones:** Font Awesome 6.0
+- **Design:** Responsivo
 
-### 2. Criar Banco de Dados
-1. No phpMyAdmin, crie um novo banco de dados chamado: `raf-projeto_yFood`
-2. O sistema criará automaticamente as tabelas na primeira execução
-
-### 3. Configurar Projeto
-1. Copie todos os arquivos para a pasta: `C:\xampp\htdocs\yfood\`
-2. Acesse: `http://localhost/yfood/`
-
-### 4. Configurações do Banco (se necessário)
-Edite o arquivo `config/database.php` se suas credenciais forem diferentes:
-```php
-$host = 'localhost';
-$dbname = 'raf-projeto_yFood';
-$username = 'root';  // Seu usuário MySQL
-$password = '';      // Sua senha MySQL
-```
-
-## 👤 Sistema de Usuários
-
-### Cadastro de Clientes:
-- Os clientes podem criar suas próprias contas
-- Validação de dados e verificação de duplicatas
-- Senhas criptografadas com segurança
-
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
-yfood/
-├── index.php                 # Página inicial
-├── login.php                 # Página de login
-├── carrinho.php             # Página do carrinho
-├── checkout.php             # Página de finalização
-├── logout.php               # Logout
-├── config/
-│   └── database.php         # Configuração do banco
-├── cadastro.php             # Página de cadastro de clientes
+Projeto_yFood/
+├── index.php                 # Página inicial do cliente
+├── login.php                 # Login de clientes
+├── logout.php                # Logout de clientes
+├── cadastro.php              # Cadastro de clientes
+├── carrinho.php              # Carrinho de compras
+├── checkout.php              # Finalização de pedidos
+├── historico.php             # Histórico de pedidos do cliente
+├── admin/
+│   ├── index.php             # Painel administrativo
+│   ├── login.php             # Login do admin
+│   ├── logout.php            # Logout do admin
+│   ├── clientes.php          # Gerenciamento de clientes
+│   ├── pedidos.php           # Gerenciamento de pedidos
+│   └── produtos.php          # Gerenciamento de produtos
 ├── ajax/
 │   ├── adicionar_carrinho.php
 │   ├── atualizar_carrinho.php
 │   └── remover_carrinho.php
+├── config/
+│   └── database.php          # Configuração do banco de dados
 ├── assets/
 │   ├── css/
-│   │   └── style.css        # Estilos CSS
-│   └── js/
-│       └── script.js        # JavaScript
-├── uploads/                 # Pasta para imagens (criada automaticamente)
+│   │   └── style.css         # Estilos gerais
+│   ├── js/
+│   │   └── script.js         # Scripts JS
+│   └── img/
+│       └── logo.png          # Logo do sistema
+├── database_setup.sql        # Script de criação do banco
 └── README.md
 ```
-
-## 🎨 Características Visuais
-
-- **Paleta de Cores**: Vermelho (#d32f2f) e branco, inspirada no McDonald's
-- **Design Responsivo**: Funciona em desktop, tablet e mobile
-- **Animações**: Efeitos suaves e transições
-- **Ícones**: Font Awesome para melhor experiência visual
-- **Tipografia**: Fontes legíveis e modernas
-
-## 🔐 Segurança
-
-- **Senhas**: Hash com `password_hash()` e `password_verify()`
-- **SQL Injection**: Protegido com PDO e prepared statements
-- **XSS**: Escape de dados com `htmlspecialchars()`
-- **Sessões**: Gerenciamento seguro de sessões
-- **Upload de Arquivos**: Validação de tipos e tamanhos
-
-## 📱 Funcionalidades do Carrinho
-
-- **Adicionar Produtos**: Clique no botão "Adicionar" em qualquer produto
-- **Gerenciar Quantidades**: Use os botões + e - no carrinho
-- **Remover Itens**: Botão "Remover" para cada item
-- **Cálculo Automático**: Total atualizado em tempo real
-- **Persistência**: Carrinho mantido durante a sessão
-
-## 🛒 Fluxo de Compra
-
-1. **Navegar**: Explore o menu na página inicial
-2. **Adicionar**: Clique em "Adicionar" nos produtos desejados
-3. **Carrinho**: Visualize e gerencie itens no carrinho
-4. **Login**: Faça login para continuar (se necessário)
-5. **Checkout**: Confirme e finalize o pedido
-6. **Confirmação**: Receba confirmação do pedido
-
-## 🔧 Personalização
-
-### Cadastro de Clientes:
-1. Acesse a página de login
-2. Clique no botão "Cadastrar" (amarelo)
-3. Preencha os dados obrigatórios
-4. Faça login com suas credenciais
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique este README
-2. Consulte os logs de erro do PHP/Apache
-3. Teste em um ambiente limpo
-
-## 📄 Licença
-
-Este projeto foi desenvolvido para fins educacionais e de demonstração.
 
 ---
 
