@@ -16,12 +16,16 @@
 - Gerenciamento de clientes cadastrados
 - Login e logout de administradores
 
+---
+
 ### 🧰 Pré-requisitos
 
 - XAMPP (Apache + MySQL + PHP)
 - PHP 7.4 ou superior
 - MySQL 5.7 ou superior
 - Navegador web moderno
+
+---
 
 ### 🛠️ Tecnologias Utilizadas
 
@@ -31,6 +35,8 @@
 - **Servidor:** Apache (XAMPP)
 - **Ícones:** Font Awesome 6.0
 - **Design:** Responsivo
+
+---
 
 ### ⚙️ Estrutura do Projeto
 
