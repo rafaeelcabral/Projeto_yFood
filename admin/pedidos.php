@@ -1,14 +1,23 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
-        header('Location: login.php');
-        exit;
-    }
+// Lógica para processar o botão "dar ok" (deve ser antes de qualquer saída)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ok'])) {
     require_once '../config/database.php';
+    $id_ok = intval($_POST['id_ok']);
+    $stmt = $pdo->prepare("UPDATE pedidos SET status = 'preparando' WHERE id = ? AND status = 'pendente'");
+    $stmt->execute([$id_ok]);
+    header('Location: pedidos.php');
+    exit;
+}
+session_start();
+if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+require_once '../config/database.php';
     $id_filtro = $_GET['id'] ?? '';
     $status_filtro = $_GET['status'] ?? '';
     // Situações possíveis
-    $situacoes = ['pendente', 'preparando', 'pronto', 'entregue', 'cancelado'];
+    $situacoes = ['pendente', 'preparando', 'saiu pra entrega', 'entregue', 'cancelado'];
     $sql = 'SELECT p.*, u.nome as cliente_nome FROM pedidos p LEFT JOIN usuarios u ON p.usuario_id = u.id WHERE 1=1';
     $params = [];
     if ($id_filtro !== '') {
@@ -66,7 +75,7 @@
     <div class="content">
         <div class="header">
             <span>Pedidos</span>
-            <span><?php echo htmlspecialchars($_SESSION['admin_nome']); ?> | <a href="logout.php" style="color:#fff;text-decoration:underline;">Sair</a></span>
+            <span><a href="logout.php" style="color:#fff;text-decoration:underline;"><img src="../assets/img/sair.png" alt="Sair" width="30"></a></span>
         </div>
         <div style="padding:32px;">
             <form class="filtros" method="get">
@@ -81,16 +90,40 @@
             </form>
             <table class="pedidos-table">
                 <thead>
-                    <tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th></tr>
+                    <tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th><th>Ação</th></tr>
                 </thead>
                 <tbody>
-                <?php foreach ($pedidos as $pedido): ?>
+                <?php
+                // Função para cor do status
+                function getStatusColor($status) {
+                    switch ($status) {
+                        case 'pendente': return '#ffeb3b'; // amarelo
+                        case 'preparando': return '#ff9800'; // laranja
+                        case 'saiu pra entrega': return '#2196f3'; // azul
+                        case 'entregue': return '#4caf50'; // verde
+                        case 'cancelado': return '#f44336'; // vermelho
+                        default: return '#ccc';
+                    }
+                }
+                foreach ($pedidos as $pedido): ?>
                     <tr>
                         <td><?php echo $pedido['id']; ?></td>
                         <td><?php echo htmlspecialchars($pedido['cliente_nome'] ?? '-'); ?></td>
                         <td>R$ <?php echo number_format($pedido['total'],2,',','.'); ?></td>
-                        <td><?php echo ucfirst($pedido['status']); ?></td>
+                        <td><span class="status-<?php echo str_replace(' ', '-', $pedido['status']); ?>" style="padding:4px 12px;border-radius:12px;font-weight:bold;display:inline-block;min-width:90px;text-align:center;">
+                            <?php echo ucfirst($pedido['status']); ?>
+                        </span></td>
                         <td><?php echo date('d/m/Y H:i', strtotime($pedido['data_pedido'])); ?></td>
+                        <td>
+                        <?php if ($pedido['status'] === 'pendente'): ?>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="id_ok" value="<?php echo $pedido['id']; ?>">
+                                <button type="submit" class="btn btn-warning">OK</button>
+                            </form>
+                        <?php else: ?>
+                            -
+                        <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if (empty($pedidos)): ?>

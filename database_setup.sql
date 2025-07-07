@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT,
     total DECIMAL(10,2) NOT NULL,
-    status ENUM('pendente', 'preparando', 'pronto', 'entregue', 'cancelado') DEFAULT 'pendente',
+    status ENUM('pendente', 'preparando', 'saiu pra entrega', 'entregue', 'cancelado') DEFAULT 'pendente',
     data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

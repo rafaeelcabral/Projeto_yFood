@@ -64,7 +64,7 @@
     <div class="content">
         <div class="header">
             <span>Clientes</span>
-            <span><?php echo htmlspecialchars($_SESSION['admin_nome']); ?> | <a href="logout.php" style="color:#fff;text-decoration:underline;">Sair</a></span>
+            <span><a href="logout.php" style="color:#fff;text-decoration:underline;"><img src="../assets/img/sair.png" alt="Sair" width="30"></a></span>
         </div>
         <div style="padding:32px;">
             <form class="filtros" method="get">

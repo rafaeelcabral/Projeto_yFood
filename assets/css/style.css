@@ -406,6 +406,29 @@ body {
     border: 1px solid #f5c6cb;
 }
 
+/* Status dos pedidos */
+.status-pendente {
+    background: #ffeb3b;
+    color: #222;
+    font-weight: bold;
+}
+.status-preparando {
+    background: #ff9800;
+    color: #fff;
+}
+.status-saiu-pra-entrega {
+    background: #2196f3;
+    color: #fff;
+}
+.status-entregue {
+    background: #4caf50;
+    color: #fff;
+}
+.status-cancelado {
+    background: #f44336;
+    color: #fff;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .header .container {

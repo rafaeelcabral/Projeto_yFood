@@ -1,19 +1,27 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
-        header('Location: login.php');
-        exit;
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ok'])) {
     require_once '../config/database.php';
-    $admin_nome = $_SESSION['admin_nome'] ?? 'Administrador';
-    // Produtos mais vendidos
-    $sql_mais_vendidos = "SELECT p.nome, SUM(i.quantidade) as total_vendido FROM itens_pedido i JOIN produtos p ON i.produto_id = p.id GROUP BY i.produto_id ORDER BY total_vendido DESC, p.nome ASC LIMIT 5";
-    $stmt = $pdo->query($sql_mais_vendidos);
-    $mais_vendidos = $stmt->fetchAll();
-    // Últimos 6 pedidos
-    $sql_ultimos_pedidos = "SELECT pe.id, u.nome as cliente, pe.total, pe.status, pe.data_pedido FROM pedidos pe LEFT JOIN usuarios u ON pe.usuario_id = u.id ORDER BY pe.id DESC LIMIT 6";
-    $stmt = $pdo->query($sql_ultimos_pedidos);
-    $ultimos_pedidos = $stmt->fetchAll();
+    $id_ok = intval($_POST['id_ok']);
+    $stmt = $pdo->prepare("UPDATE pedidos SET status = 'preparando' WHERE id = ? AND status = 'pendente'");
+    $stmt->execute([$id_ok]);
+    header('Location: index.php');
+    exit;
+}
+session_start();
+if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+require_once '../config/database.php';
+$admin_nome = $_SESSION['admin_nome'] ?? 'Administrador';
+// Produtos mais vendidos
+$sql_mais_vendidos = "SELECT p.nome, SUM(i.quantidade) as total_vendido FROM itens_pedido i JOIN produtos p ON i.produto_id = p.id JOIN pedidos pe ON i.pedido_id = pe.id WHERE pe.status = 'entregue' GROUP BY i.produto_id ORDER BY total_vendido DESC, p.nome ASC LIMIT 5";
+$stmt = $pdo->query($sql_mais_vendidos);
+$mais_vendidos = $stmt->fetchAll();
+// Últimos 6 pedidos
+$sql_ultimos_pedidos = "SELECT pe.id, u.nome as cliente, pe.total, pe.status, pe.data_pedido FROM pedidos pe LEFT JOIN usuarios u ON pe.usuario_id = u.id ORDER BY pe.id DESC LIMIT 6";
+$stmt = $pdo->query($sql_ultimos_pedidos);
+$ultimos_pedidos = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -83,7 +91,7 @@
     <div class="content">
         <div class="header">
             <span>Painel do Administrador</span>
-            <span><?php echo htmlspecialchars($admin_nome); ?> | <a href="logout.php" style="color:#fff;text-decoration:underline;">Sair</a></span>
+            <span><a href="logout.php" style="color:#fff;text-decoration:underline;"><img src="../assets/img/sair.png" alt="Sair" width="30"></a></span>
         </div>
         <div class="dashboard">
             <div class="dashboard-top">
@@ -108,16 +116,39 @@
                 <h3>Últimos 6 Pedidos</h3>
                 <table>
                     <thead>
-                        <tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th></tr>
+                        <tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th><th>Ações</th></tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($ultimos_pedidos as $pedido): ?>
+                        <?php
+                        function getStatusColor($status) {
+                            switch ($status) {
+                                case 'pendente': return '#ffeb3b'; // amarelo
+                                case 'preparando': return '#ff9800'; // laranja
+                                case 'saiu pra entrega': return '#2196f3'; // azul
+                                case 'entregue': return '#4caf50'; // verde
+                                case 'cancelado': return '#f44336'; // vermelho
+                                default: return '#ccc';
+                            }
+                        }
+                        foreach ($ultimos_pedidos as $pedido): ?>
                         <tr>
                             <td><?php echo $pedido['id']; ?></td>
                             <td><?php echo htmlspecialchars($pedido['cliente'] ?? '-'); ?></td>
                             <td>R$ <?php echo number_format($pedido['total'],2,',','.'); ?></td>
-                            <td><?php echo ucfirst($pedido['status']); ?></td>
+                            <td><span class="status-<?php echo str_replace(' ', '-', $pedido['status']); ?>" style="padding:4px 12px;border-radius:12px;font-weight:bold;display:inline-block;min-width:90px;text-align:center;">
+                                <?php echo ucfirst($pedido['status']); ?>
+                            </span></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($pedido['data_pedido'])); ?></td>
+                            <td>
+                            <?php if ($pedido['status'] === 'pendente'): ?>
+                                <form method="post" style="display:inline;">
+                                    <input type="hidden" name="id_ok" value="<?php echo $pedido['id']; ?>">
+                                    <button type="submit" class="btn btn-warning">OK</button>
+                                </form>
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($ultimos_pedidos)): ?>
@@ -149,5 +180,7 @@ new Chart(ctx, {
     }
 });
 </script>
+<?php
+?>
 </body>
 </html> 

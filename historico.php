@@ -30,7 +30,7 @@
         $status_map = [
             'pendente' => 'Pendente',
             'preparando' => 'Preparando',
-            'pronto' => 'Pronto',
+            'saiu pra entrega' => 'Saiu pra Entrega',
             'entregue' => 'Entregue',
             'cancelado' => 'Cancelado'
         ];
@@ -40,13 +40,24 @@
     // Função para obter a cor do status
     function getStatusColor($status) {
         $color_map = [
-            'pendente' => '#ff9800',
-            'preparando' => '#2196f3',
-            'pronto' => '#4caf50',
-            'entregue' => '#4caf50',
-            'cancelado' => '#f44336'
+            'pendente' => '#ffeb3b', // amarelo
+            'preparando' => '#ff9800', // laranja
+            'saiu pra entrega' => '#2196f3', // azul
+            'entregue' => '#4caf50', // verde
+            'cancelado' => '#f44336' // vermelho
         ];
         return $color_map[$status] ?? '#666';
+    }
+
+    function statusClass($status) {
+        $map = [
+            'pendente' => 'pendente',
+            'preparando' => 'preparando',
+            'saiu pra entrega' => 'saiu-pra-entrega',
+            'entregue' => 'entregue',
+            'cancelado' => 'cancelado'
+        ];
+        return isset($map[$status]) ? $map[$status] : 'pendente';
     }
 ?>
 
@@ -136,7 +147,6 @@
         }
         
         .pedido-status {
-            background: rgba(255,255,255,0.2);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-weight: bold;
@@ -308,7 +318,7 @@
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div class="pedido-status" style="background-color: <?= getStatusColor($pedido['status']) ?>;">
+                                <div class="pedido-status status-<?= statusClass($pedido['status']) ?>">
                                     <?= getStatusText($pedido['status']) ?>
                                 </div>
                                 <i class="fas fa-chevron-down dropdown-icon" id="icon-<?= $pedido['id'] ?>"></i>
