@@ -47,7 +47,7 @@
         .filtros input { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; }
         .filtros button { background: #e63946; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .clientes-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        .clientes-table th, .clientes-table td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .clientes-table th, .clientes-table td { padding: 8px 12px; font-size: 1rem; border-bottom: 1px solid #eee; text-align: left; }
         .clientes-table th { background: #f1faee; }
         .clientes-table td { vertical-align: middle; }
     </style>
@@ -64,7 +64,14 @@
     <div class="content">
         <div class="header">
             <span>Clientes</span>
-            <span><a href="logout.php" style="color:#fff;text-decoration:underline;"><img src="../assets/img/sair.png" alt="Sair" width="30"></a></span>
+            <span>
+                <form action="logout.php" method="post" style="display:inline;">
+                    <button type="submit" class="btn-logout" style="display:flex;align-items:center;gap:6px;background:#fff;color:#e63946;border:none;padding:7px 18px;border-radius:18px;font-weight:bold;font-size:1rem;cursor:pointer;transition:background 0.2s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"><path fill="#e63946" d="M16.293 7.293a1 1 0 0 1 1.414 1.414L15.414 11H21a1 1 0 1 1 0 2h-5.586l2.293 2.293a1 1 0 0 1-1.414 1.414l-4-4a1 1 0 0 1 0-1.414l4-4z"/><path fill="#e63946" d="M13 3a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V5H7a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h5v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h6z"/></svg>
+                        Sair
+                    </button>
+                </form>
+            </span>
         </div>
         <div style="padding:32px;">
             <form class="filtros" method="get">

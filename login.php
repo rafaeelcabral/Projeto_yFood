@@ -57,7 +57,7 @@
         <div class="container">
             <div class="logo">
                 <!--<h1>🍔 yFood</h1>-->
-                <img src="assets/img/logo.png" alt="yFood" width="150" height="80">
+                <img src="assets/img/logo2.png" alt="Logo" width="120">
             </div>
             <nav class="nav">
                 <a href="index.php" class="nav-link">

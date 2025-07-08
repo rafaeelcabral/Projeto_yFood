@@ -8,6 +8,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ok'])) {
     header('Location: pedidos.php');
     exit;
 }
+// NOVO: Atualização de status via select
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_status']) && isset($_POST['novo_status'])) {
+    require_once '../config/database.php';
+    $id_status = intval($_POST['id_status']);
+    $novo_status = $_POST['novo_status'];
+    if ($novo_status === '') {
+        header('Location: pedidos.php');
+        exit;
+    }
+    $permitidos = [
+        'preparando' => ['saiu pra entrega', 'cancelado'],
+        'saiu pra entrega' => ['entregue', 'cancelado']
+    ];
+    $stmt = $pdo->prepare("SELECT status FROM pedidos WHERE id = ?");
+    $stmt->execute([$id_status]);
+    $atual = $stmt->fetchColumn();
+    if (isset($permitidos[$atual]) && in_array($novo_status, $permitidos[$atual])) {
+        $stmt = $pdo->prepare("UPDATE pedidos SET status = ? WHERE id = ?");
+        $stmt->execute([$novo_status, $id_status]);
+    }
+    header('Location: pedidos.php');
+    exit;
+}
 session_start();
 if (!isset($_SESSION['admin_logado']) || $_SESSION['admin_logado'] !== true) {
     header('Location: login.php');
@@ -58,7 +81,7 @@ require_once '../config/database.php';
         .filtros input, .filtros select { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; }
         .filtros button { background: #e63946; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .pedidos-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        .pedidos-table th, .pedidos-table td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .pedidos-table th, .pedidos-table td { padding: 8px 12px; font-size: 1rem; border-bottom: 1px solid #eee; text-align: left; }
         .pedidos-table th { background: #f1faee; }
         .pedidos-table td { vertical-align: middle; }
     </style>
@@ -75,7 +98,14 @@ require_once '../config/database.php';
     <div class="content">
         <div class="header">
             <span>Pedidos</span>
-            <span><a href="logout.php" style="color:#fff;text-decoration:underline;"><img src="../assets/img/sair.png" alt="Sair" width="30"></a></span>
+            <span>
+    <form action="logout.php" method="post" style="display:inline;">
+        <button type="submit" class="btn-logout" style="display:flex;align-items:center;gap:6px;background:#fff;color:#e63946;border:none;padding:7px 18px;border-radius:18px;font-weight:bold;font-size:1rem;cursor:pointer;transition:background 0.2s;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"><path fill="#e63946" d="M16.293 7.293a1 1 0 0 1 1.414 1.414L15.414 11H21a1 1 0 1 1 0 2h-5.586l2.293 2.293a1 1 0 0 1-1.414 1.414l-4-4a1 1 0 0 1 0-1.414l4-4z"/><path fill="#e63946" d="M13 3a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V5H7a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h5v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h6z"/></svg>
+            Sair
+        </button>
+    </form>
+</span>
         </div>
         <div style="padding:32px;">
             <form class="filtros" method="get">
@@ -115,11 +145,28 @@ require_once '../config/database.php';
                         </span></td>
                         <td><?php echo date('d/m/Y H:i', strtotime($pedido['data_pedido'])); ?></td>
                         <td>
-                        <?php if ($pedido['status'] === 'pendente'): ?>
+                        <?php if ($pedido['status'] === 'preparando'): ?>
                             <form method="post" style="display:inline;">
-                                <input type="hidden" name="id_ok" value="<?php echo $pedido['id']; ?>">
-                                <button type="submit" class="btn btn-warning">OK</button>
+                                <input type="hidden" name="id_status" value="<?php echo $pedido['id']; ?>">
+                                <select name="novo_status" style="padding:6px 16px; border-radius:8px; border:1px solid #ccc; min-width:170px; font-size:1rem; background:#f8f8f8; margin-right:8px;">
+                                    <option value="">---- Selecione ----</option>
+                                    <option value="saiu pra entrega">Saiu pra Entrega</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary" style="width:auto; min-width:90px; margin-left:0; padding:7px 18px; font-size:1rem; border-radius:18px; line-height:1;">Alterar</button>
                             </form>
+                        <?php elseif ($pedido['status'] === 'saiu pra entrega'): ?>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="id_status" value="<?php echo $pedido['id']; ?>">
+                                <select name="novo_status" style="padding:6px 16px; border-radius:8px; border:1px solid #ccc; min-width:170px; font-size:1rem; background:#f8f8f8; margin-right:8px;">
+                                    <option value="">---- Selecione ----</option>
+                                    <option value="entregue">Entregue</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary" style="width:auto; min-width:90px; margin-left:0; padding:7px 18px; font-size:1rem; border-radius:18px; line-height:1;">Alterar</button>
+                            </form>
+                        <?php elseif ($pedido['status'] === 'pendente'): ?>
+                            <span title="Pendente" style="font-size:1.3em;">⏳</span>
                         <?php else: ?>
                             -
                         <?php endif; ?>

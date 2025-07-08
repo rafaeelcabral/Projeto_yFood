@@ -10,6 +10,7 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f8f8f8;
+    font-size: 1rem;
 }
 
 .container {
@@ -407,6 +408,11 @@ body {
 }
 
 /* Status dos pedidos */
+.status-pendente, .status-preparando, .status-saiu-pra-entrega, .status-entregue, .status-cancelado {
+    padding: 2px 10px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+}
 .status-pendente {
     background: #ffeb3b;
     color: #222;
