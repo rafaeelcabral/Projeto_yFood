@@ -52,55 +52,8 @@ $ultimos_pedidos = $stmt->fetchAll();
     <meta charset="UTF-8">
     <title>Painel Admin - yFood</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        body { background: #f7f7f7; }
-        .admin-container { display: flex; min-height: 100vh; }
-        .sidebar {
-            width: 200px; background: #22223b; color: #fff; padding-top: 24px; display: flex; flex-direction: column;
-        }
-        .sidebar img { display: block; margin: 0 auto 24px; }
-        .sidebar a {
-            color: #fff; text-decoration: none; padding: 14px 24px; display: block; font-weight: bold; border-left: 4px solid transparent;
-        }
-        .sidebar a.active, .sidebar a:hover { background: #e63946; border-left: 4px solid #f1faee; }
-        .content { flex: 1; padding: 0; }
-        .header {
-            background: #e63946; color: #fff; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .dashboard {
-            padding: 32px; display: flex; flex-direction: column; gap: 32px;
-        }
-        .dashboard-top { display: flex; gap: 12px; justify-content: space-between; }
-        .mais-vendidos { flex-basis: 32%; max-width: 32%; min-width: 320px; }
-        .grafico { flex-basis: 68%; max-width: 68%; min-width: 320px; display: flex; align-items: center; justify-content: center; min-height: 350px; height: 400px; }
-        .ultimos-pedidos { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px 12px; font-size: 1rem; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f1faee; }
-        .mais-vendidos-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .mais-vendidos-list li {
-            background: #f1faee;
-            border-radius: 6px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            font-size: 1.08em;
-            font-weight: 500;
-            box-shadow: 0 1px 4px #0001;
-            gap: 10px;
-        }
-        .mais-vendidos-list li .medalha {
-            font-size: 1.2em;
-            margin-right: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin-base.css">
+    <link rel="stylesheet" href="../assets/css/admin-inline.css">
 </head>
 <body>
 <div class="admin-container">
