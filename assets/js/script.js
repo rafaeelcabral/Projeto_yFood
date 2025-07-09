@@ -288,3 +288,99 @@ function alternarSenha(inputId) {
     const icone = botao.querySelector('i');
     icone.className = tipo === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 } 
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.remover-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            if (confirm('Tem certeza que deseja remover este produto?')) {
+                fetch('../ajax/remover_produto.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + encodeURIComponent(id)
+                })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        document.getElementById('produto-' + id).remove();
+                    } else {
+                        alert('Erro ao remover produto: ' + (data.erro || 'Desconhecido'));
+                    }
+                })
+                .catch(() => alert('Erro de comunicação com o servidor.'));
+            }
+        });
+    });
+    var modal = document.getElementById('modal-cadastro');
+    var btnNovo = document.querySelector('.novo-btn');
+    var btnFechar = document.getElementById('fechar-modal-cadastro');
+    var formCadastro = document.getElementById('form-cadastro-produto');
+    btnNovo.addEventListener('click', function() {
+        modal.style.display = 'flex';
+    });
+    btnFechar.addEventListener('click', function() {
+        modal.style.display = 'none';
+        formCadastro.reset();
+    });
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            formCadastro.reset();
+        }
+    });
+    formCadastro.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(formCadastro);
+        fetch('../ajax/cadastrar_produto.php', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.sucesso) {
+                // Adiciona nova linha na tabela
+                var tbody = document.querySelector('.produtos-table tbody');
+                var tr = document.createElement('tr');
+                tr.id = 'produto-' + data.produto.id;
+                tr.innerHTML = `
+  <td>${data.produto.id}</td>
+  <td>${data.produto.nome}</td>
+  <td>${data.produto.tipo}</td>
+  <td>R$ ${parseFloat(data.produto.preco).toFixed(2).replace('.',',')}</td>
+  <td>${data.produto.disponivel == 1 ? 'Sim' : 'Não'}</td>
+  <td>
+    <button class="remover-btn styled-remover-btn" data-id="${data.produto.id}" title="Remover" style="cursor: pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e63946" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+    </button>
+  </td>
+`;
+                tbody.prepend(tr);
+                // Adiciona evento ao novo botão
+                tr.querySelector('.remover-btn').addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('Tem certeza que deseja remover este produto?')) {
+                        fetch('../ajax/remover_produto.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'id=' + encodeURIComponent(id)
+                        })
+                        .then(resp => resp.json())
+                        .then(data => {
+                            if (data.sucesso) {
+                                document.getElementById('produto-' + id).remove();
+                            } else {
+                                alert('Erro ao remover produto: ' + (data.erro || 'Desconhecido'));
+                            }
+                        })
+                        .catch(() => alert('Erro de comunicação com o servidor.'));
+                    }
+                });
+                modal.style.display = 'none';
+                formCadastro.reset();
+            } else {
+                alert('Erro ao cadastrar: ' + (data.erro || 'Desconhecido'));
+            }
+        })
+        .catch(() => alert('Erro de comunicação com o servidor.'));
+    });
+}); 
